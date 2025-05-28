@@ -20,7 +20,7 @@ export default function PracticePage() {
     const [selectedAnswer, setSelectedAnswer] = useState<string>('');
     const [showResult, setShowResult] = useState(false);
 
-    const selectNextQuestion = () => {
+    const selectNextQuestion = React.useCallback(() => {
         if (!currentUser || !questions.length) return;
 
         const { practiceProgress } = currentUser;
@@ -49,13 +49,13 @@ export default function PracticePage() {
             setSelectedAnswer('');
             setShowResult(false);
         }
-    };
+    }, [currentUser, questions]);
 
     useEffect(() => {
-        if (questions.length > 0 && currentUser) {
+        if (questions.length > 0 && currentUser && !currentQuestion) {
             selectNextQuestion();
         }
-    }, [questions, currentUser, selectNextQuestion]);
+    }, [questions, currentUser, selectNextQuestion, currentQuestion]);
 
     const handleAnswerSubmit = () => {
         if (!currentQuestion || !currentUser) return;
