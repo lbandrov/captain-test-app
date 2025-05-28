@@ -7,8 +7,11 @@ import {
     Radio,
     Button,
     Paper,
-    CircularProgress
+    CircularProgress,
+    Stack
 } from '@mui/material';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
 import { useQuestions } from '../contexts/QuestionsContext';
 import { useUser } from '../contexts/UserContext';
 import { Question } from '../types';
@@ -117,14 +120,26 @@ export default function PracticePage() {
 
                 <RadioGroup
                     value={selectedAnswer}
-                    onChange={(e) => setSelectedAnswer(e.target.value)}
+                    onChange={(e) => !showResult && setSelectedAnswer(e.target.value)}
                 >
                     {Object.entries(currentQuestion.options).map(([key, value]) => (
                         <FormControlLabel
                             key={key}
                             value={key}
+                            disabled={showResult}
                             control={<Radio />}
-                            label={`${key}. ${value}`}
+                            label={
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                    <span>{`${key}. ${value}`}</span>
+                                    {showResult && (
+                                        key === currentQuestion.correctAnswer ? (
+                                            <CheckCircleIcon color="success" />
+                                        ) : key === selectedAnswer ? (
+                                            <CancelIcon color="error" />
+                                        ) : null
+                                    )}
+                                </Box>
+                            }
                             sx={{
                                 ...(showResult && {
                                     color: key === currentQuestion.correctAnswer
