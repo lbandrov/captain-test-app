@@ -1,6 +1,16 @@
-# Getting Started with Create React App
+# Captain Test Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React application for practicing questions and taking examinations. The application supports:
+- Login with username
+- Practice mode with immediate feedback
+- Examination mode with configurable number of questions
+- Progress tracking
+- Image support for questions
+- Bulgarian language support
+
+## Image Support
+
+Questions can include images. Images should be placed in the `public/images/question-images/` directory with the filename being `{questionId}.jpeg`.
 
 ## Available Scripts
 

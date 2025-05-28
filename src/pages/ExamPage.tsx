@@ -18,6 +18,7 @@ import { format } from 'date-fns';
 import { useQuestions } from '../contexts/QuestionsContext';
 import { useUser } from '../contexts/UserContext';
 import { ExamState } from '../types';
+import { QuestionImage } from '../components/QuestionImage';
 
 const QUESTIONS_PER_EXAM = 60; // Configurable
 const MAX_WRONG_ANSWERS = 15; // Configurable
@@ -241,6 +242,8 @@ export default function ExamPage({ onModeSwitch }: { onModeSwitch: () => void })
                 <Typography variant="h6" gutterBottom>
                     {currentQuestion?.text}
                 </Typography>
+
+                {currentQuestion && <QuestionImage questionId={currentQuestion.id} />}
 
                 <RadioGroup
                     value={currentQuestion?.userAnswer || ''}
