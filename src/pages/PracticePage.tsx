@@ -26,29 +26,26 @@ export default function PracticePage() {
         const { practiceProgress } = currentUser;
         let availableQuestions: Question[];
 
-        // If there are incorrect questions, prioritize them
-        if (practiceProgress.incorrectQuestions.length > 0) {
-            availableQuestions = questions.filter(q => 
-                practiceProgress.incorrectQuestions.includes(q.id)
-            );
-        } else {
-            // If all questions are answered correctly, start fresh
-            if (practiceProgress.answeredQuestions.length === questions.length) {
-                practiceProgress.answeredQuestions = [];
-                practiceProgress.incorrectQuestions = [];
-            }
-            // Get questions that haven't been answered in this round
-            availableQuestions = questions.filter(q => 
-                !practiceProgress.answeredQuestions.includes(q.id)
-            );
+        // If all questions are answered in this round, start fresh
+        if (practiceProgress.answeredQuestions.length === questions.length) {
+            practiceProgress.answeredQuestions = [];
         }
 
-        if (availableQuestions.length > 0) {
-            const randomIndex = Math.floor(Math.random() * availableQuestions.length);
-            setCurrentQuestion(availableQuestions[randomIndex]);
-            setSelectedAnswer('');
-            setShowResult(false);
+        // Get questions that haven't been answered in this round
+        availableQuestions = questions.filter(q => 
+            !practiceProgress.answeredQuestions.includes(q.id)
+        );
+
+        // If no questions available (shouldn't happen), use all questions
+        if (availableQuestions.length === 0) {
+            availableQuestions = questions;
         }
+
+        // Select random question from available ones
+        const randomIndex = Math.floor(Math.random() * availableQuestions.length);
+        setCurrentQuestion(availableQuestions[randomIndex]);
+        setSelectedAnswer('');
+        setShowResult(false);
     }, [currentUser, questions]);
 
     useEffect(() => {
