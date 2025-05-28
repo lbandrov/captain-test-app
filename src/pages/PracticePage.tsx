@@ -13,7 +13,6 @@ import { useQuestions } from '../contexts/QuestionsContext';
 import { useUser } from '../contexts/UserContext';
 import { Question } from '../types';
 import { QuestionImage } from '../components/QuestionImage';
-import { getQuestionImageUrl } from '../utils/imageUtils';
 
 export default function PracticePage() {
     const { questions, loading } = useQuestions();
@@ -114,28 +113,7 @@ export default function PracticePage() {
                 </Typography>
 
                 {/* Add image if it exists for this question */}
-                {currentQuestion && (
-                    <Box 
-                        sx={{ 
-                            my: 2, 
-                            display: 'flex', 
-                            justifyContent: 'center',
-                            '& img': {
-                                maxWidth: '100%',
-                                height: 'auto'
-                            }
-                        }}
-                    >
-                        <img
-                            src={getQuestionImageUrl(currentQuestion.id)}
-                            alt=""
-                            onError={(e) => {
-                                // Hide the image container if image fails to load
-                                (e.target as HTMLElement).style.display = 'none';
-                            }}
-                        />
-                    </Box>
-                )}
+                <QuestionImage key={currentQuestion.id} questionId={currentQuestion.id} />
 
                 <RadioGroup
                     value={selectedAnswer}

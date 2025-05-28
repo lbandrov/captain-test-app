@@ -7,6 +7,20 @@ interface QuestionImageProps {
 }
 
 export const QuestionImage: React.FC<QuestionImageProps> = ({ questionId }) => {
+    // We'll use a ref to track image load status
+    const imgRef = React.useRef<HTMLImageElement | null>(null);
+    const [hasError, setHasError] = React.useState(false);
+
+    // Reset error state when question changes
+    React.useEffect(() => {
+        setHasError(false);
+        if (imgRef.current) {
+            imgRef.current.style.display = 'block';
+        }
+    }, [questionId]);
+
+    if (hasError) return null;
+
     return (
         <Box 
             sx={{ 
@@ -20,13 +34,11 @@ export const QuestionImage: React.FC<QuestionImageProps> = ({ questionId }) => {
             }}
         >
             <img
-                src={getQuestionImageUrl(questionId) || undefined}
+                ref={imgRef}
+                key={questionId}
+                src={getQuestionImageUrl(questionId)}
                 alt=""
-                onError={(e) => {
-                    // Hide the image container if image fails to load
-                    const target = e.target as HTMLElement;
-                    target.parentElement!.style.display = 'none';
-                }}
+                onError={() => setHasError(true)}
             />
         </Box>
     );
