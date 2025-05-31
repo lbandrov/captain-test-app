@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import {
     Box,
     Container,
@@ -14,20 +14,29 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { useUser } from '../contexts/UserContext';
 import PracticePage from './PracticePage';
 import ExamPage from './ExamPage';
-
-enum ViewMode {
-    PRACTICE = 'practice',
-    EXAM = 'exam'
-}
+import { ViewMode } from '../types/navigation';
 
 const MainPage: React.FC = () => {
-    const [viewMode, setViewMode] = useState<ViewMode>(ViewMode.PRACTICE);
+    const [searchParams] = useSearchParams();
+    const initialMode = searchParams.get('mode') as ViewMode || ViewMode.PRACTICE;
+    const [viewMode, setViewMode] = useState<ViewMode>(initialMode);
     const { currentUser, logout } = useUser();
     const navigate = useNavigate();
 
     const handleLogout = () => {
         logout();
         navigate('/');
+    };
+
+    const handleViewChange = (newValue: ViewMode) => {
+        if (newValue === ViewMode.DEBUG) {
+            navigate('/debug');
+        } else {
+            setViewMode(newValue);
+            const searchParams = new URLSearchParams(window.location.search);
+            searchParams.set('mode', newValue);
+            navigate(`?${searchParams.toString()}`);
+        }
     };
 
     if (!currentUser) {
@@ -48,7 +57,7 @@ const MainPage: React.FC = () => {
                 </Toolbar>
                 <Tabs
                     value={viewMode}
-                    onChange={(_, newValue) => setViewMode(newValue)}
+                    onChange={(_, newValue) => handleViewChange(newValue)}
                     centered
                     sx={{ bgcolor: 'primary.dark' }}
                 >
@@ -60,15 +69,21 @@ const MainPage: React.FC = () => {
                         label="Test Examination"
                         value={ViewMode.EXAM}
                     />
+                    {process.env.NODE_ENV === 'development' && (
+                        <Tab
+                            label="Debug"
+                            value={ViewMode.DEBUG}
+                        />
+                    )}
                 </Tabs>
             </AppBar>
 
             <Container maxWidth="md" sx={{ mt: 4 }}>
                 {viewMode === ViewMode.PRACTICE ? (
                     <PracticePage />
-                ) : (
+                ) : viewMode === ViewMode.EXAM ? (
                     <ExamPage onModeSwitch={() => setViewMode(ViewMode.PRACTICE)} />
-                )}
+                ) : null}
             </Container>
         </Box>
     );
