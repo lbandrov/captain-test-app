@@ -21,7 +21,7 @@ import { ExamState } from '../types';
 import { QuestionImage } from '../components/QuestionImage';
 
 const QUESTIONS_PER_EXAM = 60; // Configurable
-const MAX_WRONG_ANSWERS = 15; // Configurable
+const MAX_WRONG_ANSWERS = 9; // Configurable
 
 export default function ExamPage({ onModeSwitch }: { onModeSwitch: () => void }) {
     const { questions, loading } = useQuestions();
